@@ -9,6 +9,7 @@ public class main {
         int e= 0 ,i = 0;
         long n= 0;
         boolean flag = true;
+        System.out.println(letterConv('1'));
 
         do {
             try {
@@ -29,12 +30,12 @@ public class main {
                             String word = FileRead.next();
                             for (i = 0 ; i<word.length();i++) {
                                 System.out.println(word.charAt(i));
+                                System.out.println(letterConv(word.charAt(i)));
                             }
                             i=0;
                         }
 
 
-                        System.out.println(e);
                         System.out.println(n);
 
 
@@ -82,6 +83,11 @@ public class main {
     }
 
     public void Decryption(){
+
+    }
+
+    public static int letterConv(char letter){
+        return letter;
 
     }
 
