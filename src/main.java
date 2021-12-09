@@ -1,3 +1,5 @@
+import javax.lang.model.element.NestingKind;
+import java.math.BigInteger;
 import java.util.*;
 import java.io.*;
 
@@ -12,6 +14,7 @@ public class main {
         long n= 0;
         boolean flag = true;
 
+
         do {
             try {
                 switch (getMenuChoice()) {
@@ -23,42 +26,55 @@ public class main {
                         FilePath = input.nextLine();
 
                         FileRead = new Scanner(new FileInputStream((FilePath+".txt")));
-                        writer = new FileWriter(out = new File("output.rsa"));
+                        writer = new FileWriter(out = new File("output.txt"));
 
                         e = FileRead.nextInt();
                         n = FileRead.nextLong();
                         FileRead.nextLine();
 
                         // to split every letter in one word ipsum --> i p s u m
+                        // also to convert every letter to a number
                         while (FileRead.hasNextLine()){
                             String word = FileRead.nextLine();
                             for (i = 0 ; i<word.length();i++) {
                                 System.out.println(word.charAt(i));
-                                tmp = tmp + String.valueOf(letterConv().indexOf(word.charAt(i)));
-                                /*
-                                if(String.valueOf(letterConv().indexOf(word.charAt(i))).length()<2) {
-                                    if (Blocks.get(i-1).length()<4)
-                                    Blocks.add(i-1,String.valueOf(Encryption("0" + letterConv().indexOf(word.charAt(i)),e,n)));
-                                }else{
-                                    Blocks.add(String.valueOf(Encryption(String.valueOf(letterConv().indexOf(word.charAt(i))),e,n)));
 
+                                // to add 0 if the string value of the index has length 1 A = 0 ----> A = "00"
+                                if(String.valueOf(letterConv().indexOf(word.charAt(i))).length()<2) {
+                                    tmp = tmp + "0"+letterConv().indexOf(word.charAt(i));
+                                }else{
+                                    tmp = tmp + letterConv().indexOf(word.charAt(i));
                                 }
 
-                                 */
+
                             }
                             i=0;
                         }
+                        /*
+                        if (tmp.length()%2!=0){
+                            tmp=tmp+letterConv().indexOf("X");
+                            System.out.println("Added X");
+                        }
 
-                        for (i = 0;i<tmp.length();i+=4){
-                            System.out.println(tmp.substring(i,i+4));
-                            Blocks.add(tmp.substring(i,i+4));
+                        int blockSize=0;
+                        if (String.valueOf(n).length()%2!=0){
+                            blockSize = String.valueOf(n).length()+1;
+                        }else {
+                            blockSize=String.valueOf(n).length();
+                        }
+*/
+                        //to encrypt and add each block to Block arraylist
+                        for (i = 0;i<tmp.length();i+=String.valueOf(n).length()){
+                            System.out.println(tmp.substring(i,i+String.valueOf(n).length()));
+                            Blocks.add(String.valueOf(Encryption(Integer.parseInt(tmp.substring(i,i+String.valueOf(n).length())),e, n)));
                         }
 
                         for (i = 0 ; i < Blocks.size();i++){
-                            Encryption(Blocks.get(i),13,2537);
+                            writer.write(Blocks.get(i));
                         }
 
-                        writer.write(Blocks.toString());
+
+                       // writer.write(Blocks.toString());
                       //  System.out.println(e);
                        // System.out.println(n);
                        // System.out.println("output.rsa file generated");
@@ -85,14 +101,26 @@ public class main {
 
     }
 
-    public static Long Encryption(String M ,long e ,long n){
-        long m = Integer.parseInt(M);
+    public static long Encryption(long M ,long e ,long n){
 
-        return (m^e)%n;
+        return modulo(M,e,n);
     }
 
     public void Decryption(){
 
+    }
+
+    public static long modulo(long a,long b,long c) {
+        long x=1;
+        long y=a;
+        while(b > 0){
+            if(b%2 == 1){
+                x=(x*y)%c;
+            }
+            y = (y*y)%c;
+            b /= 2;
+        }
+        return x%c;
     }
 
 
