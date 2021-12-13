@@ -1,5 +1,3 @@
-import javax.lang.model.element.NestingKind;
-import java.math.BigInteger;
 import java.util.*;
 import java.io.*;
 
@@ -10,8 +8,8 @@ public class main {
         Scanner FileRead = null;
         FileWriter writer = null;
         File out = null;
-        int e= 0 ,i = 0;
-        long n= 0;
+        int i = 0;
+        long n,e= 0;
         boolean flag = true;
 
 
@@ -28,9 +26,8 @@ public class main {
                         FileRead = new Scanner(new FileInputStream((FilePath+".txt")));
                         writer = new FileWriter(out = new File("output.txt"));
 
-                        e = FileRead.nextInt();
+                        e = FileRead.nextLong();
                         n = FileRead.nextLong();
-                        FileRead.nextLine();
 
                         // to split every letter in one word ipsum --> i p s u m
                         // also to convert every letter to a number
@@ -50,9 +47,9 @@ public class main {
                             }
                             i=0;
                         }
-                        /*
+
                         if (tmp.length()%2!=0){
-                            tmp=tmp+letterConv().indexOf("X");
+                            tmp=tmp+letterConv().indexOf('X');
                             System.out.println("Added X");
                         }
 
@@ -62,22 +59,23 @@ public class main {
                         }else {
                             blockSize=String.valueOf(n).length();
                         }
-*/
+
                         //to encrypt and add each block to Block arraylist
                         for (i = 0;i<tmp.length();i+=String.valueOf(n).length()){
-                            System.out.println(tmp.substring(i,i+String.valueOf(n).length()));
-                            Blocks.add(String.valueOf(Encryption(Integer.parseInt(tmp.substring(i,i+String.valueOf(n).length())),e, n)));
+                            System.out.println(tmp.substring(i,i+String.valueOf(n).length()+1));
+                            Blocks.add(String.valueOf(Encryption(Long.parseLong(tmp.substring(i,i+String.valueOf(n).length()+1)),e, n)));
                         }
+
 
                         for (i = 0 ; i < Blocks.size();i++){
-                            writer.write(Blocks.get(i));
+                                writer.write(Blocks.get(i));
                         }
 
-
-                       // writer.write(Blocks.toString());
+                        // writer.write(Blocks.toString());
                       //  System.out.println(e);
                        // System.out.println(n);
                        // System.out.println("output.rsa file generated");
+                        System.out.println(tmp);
                         writer.close();
 
 
@@ -85,7 +83,7 @@ public class main {
                         break;
 
                     case 2:
-
+                        System.out.println(letterConv().indexOf('-'));
                         break;
 
                     case 3:
@@ -102,7 +100,7 @@ public class main {
     }
 
     public static long Encryption(long M ,long e ,long n){
-
+            
         return modulo(M,e,n);
     }
 
