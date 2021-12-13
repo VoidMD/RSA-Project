@@ -62,8 +62,8 @@ public class main {
 
                         //to encrypt and add each block to Block arraylist
                         for (i = 0;i<tmp.length();i+=String.valueOf(n).length()){
-                            System.out.println(tmp.substring(i,i+String.valueOf(n).length()+1));
-                            Blocks.add(String.valueOf(Encryption(Long.parseLong(tmp.substring(i,i+String.valueOf(n).length()+1)),e, n)));
+                            System.out.println(tmp.substring(i,i+String.valueOf(n).length()));
+                            Blocks.add(String.valueOf(Encryption(Long.parseLong(tmp.substring(i,i+String.valueOf(n).length())),e, n)));
                         }
 
 
