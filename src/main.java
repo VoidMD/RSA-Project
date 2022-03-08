@@ -22,12 +22,12 @@ public class main {
                         System.out.println("###################################Encryption###################################");
                         ArrayList<String> EncBlocks = new ArrayList<>();
                         String tmp = "";
-                        System.out.println("please enter file path :");
+                        System.out.println("Please enter the full file path (/Users/.../input.txt): ");
 
                         FilePath = input.nextLine();
 
-                        FileRead = new Scanner(new FileInputStream((FilePath+".txt")));
-                        writer = new FileWriter(out = new File("output.txt"));
+                        FileRead = new Scanner(new FileInputStream((FilePath.substring(FilePath.lastIndexOf("/")+1,FilePath.indexOf("."))+".txt")));
+                        writer = new FileWriter(out = new File((FilePath.substring(FilePath.lastIndexOf("/")+1,FilePath.indexOf("."))+".rsa")));
 
                         e = FileRead.nextLong();
                         n = FileRead.nextLong();
@@ -41,9 +41,9 @@ public class main {
                         while (FileRead.hasNextLine()){
                             String word = FileRead.nextLine();
                             for (i = 0 ; i<word.length();i++) {
-                                System.out.println(word.charAt(i));
 
                                 // to add 0 if the string value of the index has length 1 A = 0 ----> A = "00"
+                                //tmp string that has the letter after converting to digits
                                 if(String.valueOf(letterConv().indexOf(word.charAt(i))).length()<2) {
                                     tmp = tmp + "0" + letterConv().indexOf(word.charAt(i));
                                 }else{
@@ -54,32 +54,19 @@ public class main {
                             i=0;
                         }
 
-                        /* if (tmp.length()%2!=0){
-                            tmp=tmp+letterConv().indexOf('X');
-                            System.out.println("Added X");
-                        }
-                       */
+                        //to set the block size according to n
                         String blockSize = "";
                         while ((blockSize).length()<String.valueOf(n).length()){
                                 blockSize = blockSize + letterConv().indexOf('\n');
-                               System.out.println(blockSize);
 
                         }
 
-
-                        //to encrypt and add each block to Block arraylist
+                        // adding block to array list
                         for (i = 0;i<tmp.length();i+=blockSize.length()){
-                            System.out.println(tmp.substring(i,i+blockSize.length()));
                             EncBlocks.add(tmp.substring(i,i+blockSize.length()));
                         }
-                        /*
-                        if(String.valueOf(Decryption(Long.parseLong(DecBlocks.get(i)), d, n)).length()%blockSize.length()!=0){
-                            for (int j = 0 ; j < blockSize.length()-(String.valueOf(Decryption(Long.parseLong(DecBlocks.get(i)), d, n)).length()%blockSize.length());j++ ) {
-                                DecTmp = DecTmp + "0";
-                                System.out.println("Added 0");
-                            }}
-                        */
 
+                        //encrypting each block and make sure that block size after encrypting = number of digits in n
                         for (i = 0 ; i < EncBlocks.size();i++){
                             if (String.valueOf(Encryption(Long.parseLong(EncBlocks.get(i)), e, n)).length()%blockSize.length()!=0){
                                 String s1 ="";
@@ -87,7 +74,6 @@ public class main {
                                     s1+="0";
                                 }
                                 writer.write( s1+Encryption(Long.parseLong(EncBlocks.get(i)), e, n));
-                                System.out.println("Added 0");
 
                             }else {
                                 writer.write(String.valueOf(Encryption(Long.parseLong(EncBlocks.get(i)), e, n)));
@@ -95,14 +81,11 @@ public class main {
 
                         }
 
-                        // writer.write(EncBlocks.toString());
-                      //  System.out.println(e);
-                       // System.out.println(n);
-                       // System.out.println("output.rsa file generated");
-                        System.out.println(tmp);
+                        System.out.println("Generating the file ...");
+                       System.out.println((FilePath.substring(FilePath.lastIndexOf("/")+1,FilePath.indexOf("."))+".rsa") + " file has been generated");
                         writer.close();
 
-
+                        System.exit(0);
 
                         break;
 
@@ -110,66 +93,76 @@ public class main {
                         ArrayList<String> DecBlocks = new ArrayList<>();
                         String DecTmp = "";
 
+                        System.out.println("###################################Decryption###################################");
+
                         //Decryption
-                        System.out.println("please enter file path :");
+                        System.out.println("Please enter the full file path (/Users/.../input.txt): ");
 
                         FilePath = input.nextLine();
 
-                        FileRead = new Scanner(new FileInputStream((FilePath+".txt")));
-                        writer = new FileWriter(out = new File("output1.txt"));
+                        FileRead = new Scanner(new FileInputStream((FilePath.substring(FilePath.lastIndexOf("/")+1,FilePath.indexOf("."))+".rsa")));
+                        writer = new FileWriter(out = new File((FilePath.substring(FilePath.lastIndexOf("/")+1,FilePath.indexOf("."))+".dec")));
+
+                        System.out.println("File has been found successfully");
 
                         System.out.println("Enter the value of d :");
                         long d = input.nextLong();
                         System.out.println("Enter the value of n :");
                         n = input.nextLong();
 
+                        //read the file and store it in string tmp
                         tmp = "";
                         while (FileRead.hasNextLine()){
                             tmp = tmp + FileRead.nextLine();
                         }
-                        System.out.println("tmp: "+tmp);
 
-
+                        //to set the block size according to n
                         blockSize = "";
                         while ((blockSize).length()<String.valueOf(n).length()){
-                            blockSize = blockSize + letterConv().indexOf('\n');
-                            System.out.println(blockSize);
+                            blockSize = blockSize + (letterConv().indexOf('\n')+1);
 
                         }
 
+                        //padding to the string tmp
                         while (tmp.length()%blockSize.length()!=0){
                             tmp= "0"+tmp.substring(0);
-                            System.out.println("0 added");
                         }
 
+                        //dividing the string tmp into blocks and store it in arraylist
                         for (i = 0;i<tmp.length();i+=blockSize.length()){
-                            System.out.println(tmp.substring(i,i+blockSize.length()));
                             DecBlocks.add(tmp.substring(i,i+blockSize.length()));
                         }
 
+                        //decrypt the block stored in DecBlocks arraylist and make sure that each block = number of digits in n
                         for (i = 0 ; i < DecBlocks.size();i++){
                             if(String.valueOf(Decryption(Long.parseLong(DecBlocks.get(i)), d, n)).length()%blockSize.length()!=0){
                                for (int j = 0 ; j < blockSize.length()-(String.valueOf(Decryption(Long.parseLong(DecBlocks.get(i)), d, n)).length()%blockSize.length());j++ ) {
                                    DecTmp = DecTmp + "0";
-                                   System.out.println("Added 0");
                                }}
                            DecTmp = DecTmp + Decryption(Long.parseLong(DecBlocks.get(i)), d, n);
 
-                            System.out.println(DecTmp);
                         }
 
-                        System.out.println(DecTmp);
-
+                        //dividing the string DecTmp to blocks of size 2 to convert it to letters
                         for (i = 0;i<DecTmp.length();i+=2){
                             writer.write(letterConv().get(Integer.parseInt(DecTmp.substring(i,i+2))));
-                            System.out.println(letterConv().get(Integer.parseInt(DecTmp.substring(i,i+2))));
                         }
 
+
+
+                        System.out.println("d = "+d);
+                        System.out.println("n = "+n);
+                        System.out.println("Generating the file ...");
+                        System.out.println((FilePath.substring(FilePath.lastIndexOf("/")+1,FilePath.indexOf("."))+".dec") + " file has been generated");
+
                         writer.close();
+                        System.exit(0);
+
 
                         break;
 
                     case 3:
+                        //exit the program
                         System.out.println("Terminating ... ");
                         System.exit(0);
                         break;
@@ -191,21 +184,8 @@ public class main {
 
         return modulo(c,d,n);
     }
-/*
-    public static long modulo(double a,long b,long c) {
-        long x=1;
-        double y=a;
-        while(b > 0){
-            if(b%2 == 1){
-                x= (long) ((x*y)%c);
-            }
-            y = (y*y)%c;
-            b /= 2;
-        }
-        return x%c;
-    }
-*/
 
+//modular exponentiation method
     public static long modulo(long a, long b,long n) {
 
         BigInteger x = new BigInteger(Long.toString(n));
@@ -221,6 +201,7 @@ public class main {
         return y.longValue();
     }
 
+//method that store each letter in arraylist that can be used to convert letters to digits or digits to letters
     public static ArrayList<Character> letterConv(){
         ArrayList<Character> letters = new ArrayList<>();
         for (int i = 65; i <= 90; i++){
@@ -252,6 +233,7 @@ public class main {
         return letters;
     }
 
+// to display the menu
     public static  int  getMenuChoice(){
         Scanner scanner = new Scanner(System.in);
         int choice;
